@@ -3,56 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PK Earning | Automatic Portal</title>
+    <title>PK EARNING | Member Portal</title>
     <style>
-        :root { --primary: #ffd700; --dark: #121212; --card: #1e1e1e; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; margin: 0; text-align: center; }
-        header { padding: 20px; background: #000; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
-        .logo-text { font-size: 24px; font-weight: bold; color: var(--primary); }
-        .user-stats { background: #222; padding: 20px; margin: 15px; border-radius: 15px; border: 1px solid #333; display: flex; justify-content: space-around; }
-        .stat-box { text-align: center; }
-        .stat-box small { color: #888; display: block; }
-        .stat-box span { font-size: 18px; font-weight: bold; color: var(--primary); }
-        .plans { display: flex; flex-wrap: wrap; justify-content: center; padding: 10px; }
-        .card { background: var(--card); border: 1px solid #333; border-radius: 15px; width: 300px; margin: 10px; padding: 20px; position: relative; overflow: hidden; }
-        .card h3 { margin-top: 0; }
-        .btn { background: var(--primary); color: black; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; display: block; margin-top: 15px; }
-        .withdraw-section { background: #000; margin: 20px; padding: 20px; border-radius: 15px; border: 1px dashed var(--primary); }
-        input { width: 80%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; background: #222; color: white; }
-        .status-tag { background: #25d366; color: white; font-size: 10px; padding: 3px 8px; border-radius: 50px; margin-top: 5px; display: inline-block; }
+        :root { --primary: #ffd700; --dark: #0a0a0a; --card: #161616; --green: #25d366; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; margin: 0; overflow-x: hidden; }
+        .container { max-width: 450px; margin: auto; padding: 15px; }
+        input, select { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: white; }
+        .btn { width: 95%; background: var(--primary); color: black; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        
+        /* Screens */
+        #auth-page, #deposit-page, #withdraw-page { display: block; }
+        #dashboard { display: none; }
+
+        /* Dashboard UI */
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; }
+        .balance-box { background: linear-gradient(135deg, #1a1a1a, #252525); padding: 25px; border-radius: 20px; border: 1px solid var(--primary); margin: 20px 0; text-align: center; }
+        .plan-card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Overlay Forms */
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; padding-top: 50px; }
+        .modal { background: var(--card); width: 85%; margin: auto; padding: 20px; border-radius: 20px; border: 1px solid var(--primary); }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo-text">PK EARNING</div>
-        <div style="font-size: 12px;">ID: PK-78600</div>
-    </header>
 
-    <div class="user-stats">
-        <div class="stat-box"><small>Total Balance</small><span>Rs. 0.00</span></div>
-        <div class="stat-box"><small>Daily Profit</small><span>10% - 12%</span></div>
-        <div class="stat-box"><small>Status</small><div class="status-tag">Verified</div></div>
+    <div id="auth-page" class="container">
+        <h1 style="color:var(--primary); text-align:center;">PK EARNING</h1>
+        <div style="background:var(--card); padding:20px; border-radius:20px; border:1px solid #333;">
+            <h2 id="auth-title">Member Login</h2>
+            <input type="number" id="u-phone" placeholder="Phone Number">
+            <input type="password" id="u-pass" placeholder="Password">
+            <button class="btn" onclick="authAction()">Continue</button>
+            <p onclick="toggleAuth()" style="color:var(--primary); font-size:13px; cursor:pointer; margin-top:15px;" id="toggle-text">Don't have an account? Register</p>
+        </div>
     </div>
 
-    <div class="withdraw-section">
-        <h3 style="color:var(--primary); margin-top:0;">💸 Fast Withdrawal</h3>
-        <input type="text" placeholder="Enter EasyPaisa/JazzCash Number">
-        <input type="number" placeholder="Amount (Min Rs. 500)">
-        <a href="https://wa.me/923490666038?text=Withdrawal%20Request" class="btn" style="background:#fff;">Request Withdraw</a>
+    <div id="dashboard">
+        <header>
+            <div style="color:var(--primary); font-weight:bold;">PK EARNING</div>
+            <div onclick="logout()" style="color:#ff4444; font-size:12px;">Logout</div>
+        </header>
+        <div class="container">
+            <div class="balance-box">
+                <small style="color:#888;">Total Assets</small>
+                <div style="font-size:35px; font-weight:bold; color:var(--primary);">Rs. 0.00</div>
+                <div style="background:rgba(37, 211, 102, 0.1); color:var(--green); display:inline-block; padding:5px 15px; border-radius:50px; font-size:12px; margin-top:10px;">Status: Active</div>
+            </div>
+
+            <h3>Investment Plans</h3>
+            <div class="plan-card">
+                <div><strong>Starter</strong><br><small>Rs. 1,000 | Daily 10%</small></div>
+                <button onclick="openModal('deposit')" style="background:var(--primary); border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">Invest</button>
+            </div>
+            <div class="plan-card">
+                <div><strong>VIP Pro</strong><br><small>Rs. 10,000 | Daily 12%</small></div>
+                <button onclick="openModal('deposit')" style="background:var(--primary); border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">Invest</button>
+            </div>
+
+            <button class="btn" style="background:#fff;" onclick="openModal('withdraw')">Withdraw Funds</button>
+            <a href="https://wa.me/923490666038" style="background:var(--green); color:white; text-decoration:none; display:block; padding:15px; border-radius:10px; font-weight:bold; margin-top:15px; text-align:center;">Contact Support</a>
+        </div>
     </div>
 
-    <h2>Investment Plans</h2>
-    <div class="plans">
-        <div class="card"><h3>Starter</h3><div style="color:var(--primary); font-size:28px;">Rs. 1,000</div><p>Daily Profit: Rs. 100</p><p>Total Return: Rs. 2,000</p><a href="https://wa.me/923490666038?text=Activate%20Starter%20Plan" class="btn">Activate Now</a></div>
-        <div class="card"><h3>VIP Pro</h3><div style="color:var(--primary); font-size:28px;">Rs. 10,000</div><p>Daily Profit: Rs. 1,200</p><p>Total Return: Rs. 24,000</p><a href="https://wa.me/923490666038?text=Activate%20VIP%20Pro%20Plan" class="btn">Activate Now</a></div>
+    <div id="deposit-modal" class="overlay">
+        <div class="modal">
+            <h3 style="color:var(--primary);">Deposit Payment</h3>
+            <p style="font-size:12px; color:#ccc;">Send payment to: <b>0316-7708120</b> (JazzCash)</p>
+            <input type="number" id="dep-amount" placeholder="Enter Amount Sent">
+            <input type="text" id="dep-tid" placeholder="Transaction ID (TID)">
+            <p style="font-size:11px; color:#888;">*Take screenshot & send on WhatsApp after clicking submit</p>
+            <button class="btn" onclick="submitDeposit()">Submit Deposit</button>
+            <button class="btn" style="background:#333; color:white;" onclick="closeModal()">Cancel</button>
+        </div>
     </div>
 
-    <div class="payment-info" style="padding: 20px; font-size: 14px; color: #888;">
-        <p>Deposit JazzCash/EasyPaisa on: <strong>0316-7708120</strong></p>
-        <p>After deposit, click "Activate Now" to link your transaction.</p>
+    <div id="withdraw-modal" class="overlay">
+        <div class="modal">
+            <h3 style="color:var(--primary);">Withdrawal Request</h3>
+            <select id="w-method"><option>EasyPaisa</option><option>JazzCash</option></select>
+            <input type="number" id="w-account" placeholder="Account Number">
+            <input type="number" id="w-amount" placeholder="Amount (Min Rs. 500)">
+            <button class="btn" onclick="submitWithdraw()">Withdraw Now</button>
+            <button class="btn" style="background:#333; color:white;" onclick="closeModal()">Cancel</button>
+        </div>
     </div>
 
-    <footer style="padding:20px; color:#444; font-size:12px;">Automatic System v2.0 | Managed by Salman Shahid</footer>
+    <script>
+        let isLogin = true;
+        let myNum = "923490666038";
+
+        function toggleAuth() {
+            isLogin = !isLogin;
+            document.getElementById('auth-title').innerText = isLogin ? 'Member Login' : 'Create Account';
+            document.getElementById('toggle-text').innerText = isLogin ? "Don't have an account? Register" : "Already have an account? Login";
+        }
+
+        function authAction() {
+            const p = document.getElementById('u-phone').value;
+            const pass = document.getElementById('u-pass').value;
+            if(!p || !pass) return alert("Fill all fields");
+
+            if(!isLogin) {
+                localStorage.setItem('pk_p', p); localStorage.setItem('pk_pass', pass);
+                alert("Account Created! Please Login."); toggleAuth();
+            } else {
+                if(p === localStorage.getItem('pk_p') && pass === localStorage.getItem('pk_pass')) {
+                    localStorage.setItem('loggedIn', 'true'); showDash();
+                } else { alert("Wrong credentials"); }
+            }
+        }
+
+        function showDash() {
+            document.getElementById('auth-page').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        }
+
+        function openModal(type) { document.getElementById(type + '-modal').style.display = 'block'; }
+        function closeModal() { 
+            document.getElementById('deposit-modal').style.display = 'none'; 
+            document.getElementById('withdraw-modal').style.display = 'none'; 
+        }
+
+        function submitDeposit() {
+            const amt = document.getElementById('dep-amount').value;
+            const tid = document.getElementById('dep-tid').value;
+            const msg = `AUTO-DEPOSIT-REQUEST%0AAmount: ${amt}%0ATID: ${tid}%0APhone: ${localStorage.getItem('pk_p')}`;
+            window.location.href = `https://wa.me/${myNum}?text=${msg}`;
+        }
+
+        function submitWithdraw() {
+            const amt = document.getElementById('w-amount').value;
+            const acc = document.getElementById('w-account').value;
+            const method = document.getElementById('w-method').value;
+            alert("Withdrawal Request Submitted! Processing time: 24 Hours.");
+            const msg = `AUTO-WITHDRAW-REQUEST%0AAmount: ${amt}%0AMethod: ${method}%0AAccount: ${acc}`;
+            window.location.href = `https://wa.me/${myNum}?text=${msg}`;
+        }
+
+        function logout() { localStorage.removeItem('loggedIn'); location.reload(); }
+
+        window.onload = function() { if(localStorage.getItem('loggedIn')) showDash(); }
+    </script>
 </body>
-                                              </html>
-                                              
+</html>
