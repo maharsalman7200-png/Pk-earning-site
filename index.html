@@ -3,146 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PK EARNING | Member Portal</title>
+    <title>PK EARNING | Auto Member Portal</title>
     <style>
-        :root { --primary: #ffd700; --dark: #0a0a0a; --card: #161616; --green: #25d366; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; margin: 0; overflow-x: hidden; }
-        .container { max-width: 450px; margin: auto; padding: 15px; }
-        input, select { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: white; }
+        :root { --primary: #ffd700; --dark: #0a0a0a; --card: #151515; --text: #eee; --green: #25d366; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: var(--text); margin: 0; }
+        .container { max-width: 420px; margin: auto; padding: 15px; }
+        input, select { width: 90%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #333; background: #000; color: white; }
         .btn { width: 95%; background: var(--primary); color: black; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
         
-        /* Screens */
-        #auth-page, #deposit-page, #withdraw-page { display: block; }
-        #dashboard { display: none; }
-
         /* Dashboard UI */
-        header { background: #000; padding: 15px; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; }
-        .balance-box { background: linear-gradient(135deg, #1a1a1a, #252525); padding: 25px; border-radius: 20px; border: 1px solid var(--primary); margin: 20px 0; text-align: center; }
-        .plan-card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        #auth-screen, #dashboard { display: none; }
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        .balance-card { background: linear-gradient(145deg, #1a1a1a, #252525); padding: 25px; border-radius: 20px; border: 1px solid var(--primary); margin: 20px 0; text-align: center; }
+        .status-badge { background: rgba(255, 215, 0, 0.1); color: var(--primary); padding: 4px 12px; border-radius: 50px; font-size: 11px; margin-top: 10px; display: inline-block; }
         
-        /* Overlay Forms */
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; padding-top: 50px; }
-        .modal { background: var(--card); width: 85%; margin: auto; padding: 20px; border-radius: 20px; border: 1px solid var(--primary); }
+        .plan-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; padding-top: 40px; }
+        .modal-content { background: var(--card); width: 85%; margin: auto; padding: 25px; border-radius: 25px; border: 1px solid var(--primary); position: relative; }
     </style>
 </head>
 <body>
 
-    <div id="auth-page" class="container">
-        <h1 style="color:var(--primary); text-align:center;">PK EARNING</h1>
-        <div style="background:var(--card); padding:20px; border-radius:20px; border:1px solid #333;">
-            <h2 id="auth-title">Member Login</h2>
-            <input type="number" id="u-phone" placeholder="Phone Number">
-            <input type="password" id="u-pass" placeholder="Password">
-            <button class="btn" onclick="authAction()">Continue</button>
-            <p onclick="toggleAuth()" style="color:var(--primary); font-size:13px; cursor:pointer; margin-top:15px;" id="toggle-text">Don't have an account? Register</p>
+    <div id="auth-screen" class="container" style="display:block;">
+        <h1 style="color:var(--primary); text-align:center; margin-top:50px;">PK EARNING</h1>
+        <div style="background:var(--card); padding:25px; border-radius:25px; border:1px solid #222;">
+            <h2 id="auth-title">Login Portal</h2>
+            <input type="number" id="phone" placeholder="Phone Number">
+            <input type="password" id="pass" placeholder="Password">
+            <button class="btn" onclick="handleAuth()">Continue</button>
+            <p onclick="toggleAuth()" id="toggle-txt" style="color:var(--primary); font-size:13px; margin-top:15px; cursor:pointer;">New here? Register Account</p>
         </div>
     </div>
 
     <div id="dashboard">
         <header>
-            <div style="color:var(--primary); font-weight:bold;">PK EARNING</div>
-            <div onclick="logout()" style="color:#ff4444; font-size:12px;">Logout</div>
+            <div style="color:var(--primary); font-weight:bold; font-size:20px;">PK EARNING</div>
+            <div onclick="logout()" style="color:#ff4444; font-size:12px; cursor:pointer;">Logout</div>
         </header>
         <div class="container">
-            <div class="balance-box">
-                <small style="color:#888;">Total Assets</small>
-                <div style="font-size:35px; font-weight:bold; color:var(--primary);">Rs. 0.00</div>
-                <div style="background:rgba(37, 211, 102, 0.1); color:var(--green); display:inline-block; padding:5px 15px; border-radius:50px; font-size:12px; margin-top:10px;">Status: Active</div>
+            <div class="balance-card">
+                <small style="color:#888;">Current Balance</small>
+                <div style="font-size:38px; font-weight:bold; color:var(--primary);">Rs. <span id="bal-val">0.00</span></div>
+                <div class="status-badge" id="w-status">Status: No Pending Withdrawal</div>
             </div>
 
-            <h3>Investment Plans</h3>
+            <h3 style="margin:20px 0 10px 0;">Investment Plans</h3>
             <div class="plan-card">
-                <div><strong>Starter</strong><br><small>Rs. 1,000 | Daily 10%</small></div>
-                <button onclick="openModal('deposit')" style="background:var(--primary); border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">Invest</button>
+                <div><b>Starter Plan</b><br><small>Rs. 1,000 | Daily 10%</small></div>
+                <button class="btn" style="width:auto; padding:8px 20px;" onclick="openModal('dep')">Invest</button>
             </div>
             <div class="plan-card">
-                <div><strong>VIP Pro</strong><br><small>Rs. 10,000 | Daily 12%</small></div>
-                <button onclick="openModal('deposit')" style="background:var(--primary); border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">Invest</button>
+                <div><b>VIP Pro Plan</b><br><small>Rs. 10,000 | Daily 12%</small></div>
+                <button class="btn" style="width:auto; padding:8px 20px;" onclick="openModal('dep')">Invest</button>
             </div>
 
-            <button class="btn" style="background:#fff;" onclick="openModal('withdraw')">Withdraw Funds</button>
-            <a href="https://wa.me/923490666038" style="background:var(--green); color:white; text-decoration:none; display:block; padding:15px; border-radius:10px; font-weight:bold; margin-top:15px; text-align:center;">Contact Support</a>
+            <button class="btn" style="background:#fff;" onclick="openModal('wd')">Withdraw Profits</button>
+            <a href="https://wa.me/923490666038" style="background:var(--green); color:white; display:block; padding:15px; text-decoration:none; border-radius:12px; font-weight:bold; margin-top:15px; text-align:center;">📞 24/7 Support</a>
         </div>
     </div>
 
-    <div id="deposit-modal" class="overlay">
-        <div class="modal">
-            <h3 style="color:var(--primary);">Deposit Payment</h3>
-            <p style="font-size:12px; color:#ccc;">Send payment to: <b>0316-7708120</b> (JazzCash)</p>
-            <input type="number" id="dep-amount" placeholder="Enter Amount Sent">
-            <input type="text" id="dep-tid" placeholder="Transaction ID (TID)">
-            <p style="font-size:11px; color:#888;">*Take screenshot & send on WhatsApp after clicking submit</p>
-            <button class="btn" onclick="submitDeposit()">Submit Deposit</button>
-            <button class="btn" style="background:#333; color:white;" onclick="closeModal()">Cancel</button>
+    <div id="dep-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="color:var(--primary); margin-top:0;">Secure Deposit</h3>
+            <p style="font-size:13px;">Send funds to: <b style="color:var(--primary);">0316-7708120</b> (JazzCash)</p>
+            <input type="number" id="d-amount" placeholder="Amount Sent">
+            <input type="text" id="d-tid" placeholder="Transaction ID (TID)">
+            <button class="btn" onclick="doDeposit()">Confirm Deposit</button>
+            <button class="btn" style="background:#333; color:white;" onclick="closeModal()">Back</button>
         </div>
     </div>
 
-    <div id="withdraw-modal" class="overlay">
-        <div class="modal">
-            <h3 style="color:var(--primary);">Withdrawal Request</h3>
+    <div id="wd-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="color:var(--primary); margin-top:0;">Withdrawal Request</h3>
             <select id="w-method"><option>EasyPaisa</option><option>JazzCash</option></select>
             <input type="number" id="w-account" placeholder="Account Number">
-            <input type="number" id="w-amount" placeholder="Amount (Min Rs. 500)">
-            <button class="btn" onclick="submitWithdraw()">Withdraw Now</button>
-            <button class="btn" style="background:#333; color:white;" onclick="closeModal()">Cancel</button>
+            <input type="number" id="w-amt" placeholder="Withdraw Amount">
+            <button class="btn" onclick="doWithdraw()">Apply Withdrawal</button>
+            <button class="btn" style="background:#333; color:white;" onclick="closeModal()">Back</button>
         </div>
     </div>
 
     <script>
         let isLogin = true;
-        let myNum = "923490666038";
+        let adminPhone = "923490666038";
 
         function toggleAuth() {
             isLogin = !isLogin;
-            document.getElementById('auth-title').innerText = isLogin ? 'Member Login' : 'Create Account';
-            document.getElementById('toggle-text').innerText = isLogin ? "Don't have an account? Register" : "Already have an account? Login";
+            document.getElementById('auth-title').innerText = isLogin ? 'Login Portal' : 'Register Account';
+            document.getElementById('toggle-txt').innerText = isLogin ? "New here? Register Account" : "Already have account? Login";
         }
 
-        function authAction() {
-            const p = document.getElementById('u-phone').value;
-            const pass = document.getElementById('u-pass').value;
-            if(!p || !pass) return alert("Fill all fields");
+        function handleAuth() {
+            const p = document.getElementById('phone').value;
+            const ps = document.getElementById('pass').value;
+            if(!p || !ps) return alert("Fill all fields!");
 
             if(!isLogin) {
-                localStorage.setItem('pk_p', p); localStorage.setItem('pk_pass', pass);
-                alert("Account Created! Please Login."); toggleAuth();
+                localStorage.setItem('u_p', p); localStorage.setItem('u_ps', ps);
+                alert("Account Registered! Auto-Mail Sent to your number. Please Login."); toggleAuth();
             } else {
-                if(p === localStorage.getItem('pk_p') && pass === localStorage.getItem('pk_pass')) {
-                    localStorage.setItem('loggedIn', 'true'); showDash();
-                } else { alert("Wrong credentials"); }
+                if(p === localStorage.getItem('u_p') && ps === localStorage.getItem('u_ps')) {
+                    localStorage.setItem('isIn', 'true'); showDash();
+                } else { alert("Invalid Credentials!"); }
             }
         }
 
         function showDash() {
-            document.getElementById('auth-page').style.display = 'none';
+            document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
+            if(localStorage.getItem('pendingW') === 'true') {
+                document.getElementById('w-status').innerText = "Status: Withdrawal Pending (24h)";
+                document.getElementById('w-status').style.color = "#ffd700";
+            }
         }
 
-        function openModal(type) { document.getElementById(type + '-modal').style.display = 'block'; }
-        function closeModal() { 
-            document.getElementById('deposit-modal').style.display = 'none'; 
-            document.getElementById('withdraw-modal').style.display = 'none'; 
+        function openModal(m) { document.getElementById(m+'-modal').style.display='block'; }
+        function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
+
+        function doDeposit() {
+            const amt = document.getElementById('d-amount').value;
+            const tid = document.getElementById('d-tid').value;
+            alert("Deposit submitted! System verifying Transaction ID...");
+            window.location.href = `https://wa.me/${adminPhone}?text=NEW_DEPOSIT_REQUEST%0APhone: ${localStorage.getItem('u_p')}%0AAmount: ${amt}%0ATID: ${tid}`;
         }
 
-        function submitDeposit() {
-            const amt = document.getElementById('dep-amount').value;
-            const tid = document.getElementById('dep-tid').value;
-            const msg = `AUTO-DEPOSIT-REQUEST%0AAmount: ${amt}%0ATID: ${tid}%0APhone: ${localStorage.getItem('pk_p')}`;
-            window.location.href = `https://wa.me/${myNum}?text=${msg}`;
-        }
-
-        function submitWithdraw() {
-            const amt = document.getElementById('w-amount').value;
+        function doWithdraw() {
+            const amt = document.getElementById('w-amt').value;
             const acc = document.getElementById('w-account').value;
-            const method = document.getElementById('w-method').value;
-            alert("Withdrawal Request Submitted! Processing time: 24 Hours.");
-            const msg = `AUTO-WITHDRAW-REQUEST%0AAmount: ${amt}%0AMethod: ${method}%0AAccount: ${acc}`;
-            window.location.href = `https://wa.me/${myNum}?text=${msg}`;
+            localStorage.setItem('pendingW', 'true');
+            alert("SUCCESS! Auto-Mail confirmation sent. Withdrawal will be received in 24 hours.");
+            window.location.href = `https://wa.me/${adminPhone}?text=NEW_WITHDRAW_REQUEST%0APhone: ${localStorage.getItem('u_p')}%0AAmount: ${amt}%0AAccount: ${acc}`;
         }
 
-        function logout() { localStorage.removeItem('loggedIn'); location.reload(); }
-
-        window.onload = function() { if(localStorage.getItem('loggedIn')) showDash(); }
+        function logout() { localStorage.removeItem('isIn'); location.reload(); }
+        window.onload = function() { if(localStorage.getItem('isIn')) showDash(); }
     </script>
 </body>
 </html>
